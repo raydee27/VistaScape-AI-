@@ -1,0 +1,7 @@
+{
+  "name": "VistaScape AI",
+  "description": "A professional tool for landscapers to visualize property transformations using AI.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
