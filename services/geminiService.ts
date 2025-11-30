@@ -136,6 +136,41 @@ export const analyzeImage = async (
 };
 
 /**
+ * Analyzes a video using Gemini Pro to extract key information.
+ */
+export const analyzeVideo = async (
+  video: ImageData,
+  prompt: string
+): Promise<string> => {
+  const ai = getClient();
+  const base64Data = video.base64.split(',')[1] || video.base64;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: {
+        parts: [
+          {
+            text: prompt || "Analyze this video in detail. Describe the scene, key objects, actions, and any notable visual characteristics."
+          },
+          {
+            inlineData: {
+              data: base64Data,
+              mimeType: video.mimeType,
+            },
+          },
+        ],
+      },
+    });
+
+    return response.text || "No analysis could be generated.";
+  } catch (error) {
+    console.error("Gemini Video Analysis Error:", error);
+    throw new Error("Failed to analyze video. Note: Large video files may exceed inline transfer limits.");
+  }
+};
+
+/**
  * Generates a video from an image and prompt using Veo 3.1.
  */
 export const generateVideo = async (
