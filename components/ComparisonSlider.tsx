@@ -106,7 +106,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
         <img 
           src={beforeImage.base64} 
           alt="Before landscaping" 
-          className="absolute inset-0 w-full h-full object-cover grayscale" 
+          className="absolute inset-0 w-full h-full object-cover" 
         />
         {/* Label Before */}
         <div className="absolute top-0 left-0 bg-white text-black px-6 py-3 border-r border-b border-black z-10 pointer-events-none">
