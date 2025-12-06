@@ -127,6 +127,11 @@ export const analyzeImage = async (
           },
         ],
       },
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 32768
+        }
+      }
     });
 
     return response.text || "";
@@ -162,6 +167,11 @@ export const analyzeVideo = async (
           },
         ],
       },
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 32768
+        }
+      }
     });
 
     return response.text || "No analysis could be generated.";
@@ -176,7 +186,9 @@ export const analyzeVideo = async (
  */
 export const generateVideo = async (
   originalImage: ImageData,
-  prompt: string
+  prompt: string,
+  resolution: '720p' | '1080p' = '720p',
+  aspectRatio: '16:9' | '9:16' = '16:9'
 ): Promise<VideoData> => {
   const ai = getClient();
   const base64Data = originalImage.base64.split(',')[1] || originalImage.base64;
@@ -191,8 +203,8 @@ export const generateVideo = async (
       },
       config: {
         numberOfVideos: 1,
-        resolution: '720p',
-        aspectRatio: '16:9' // Default to landscape
+        resolution: resolution,
+        aspectRatio: aspectRatio 
       }
     });
 
@@ -282,6 +294,9 @@ CONSTRAINTS:
 - Respect the global style of the scene and real terrain constraints.
 
 TONE: Professional, expert, encouraging, and concise.`,
+        thinkingConfig: {
+          thinkingBudget: 32768
+        }
       }
     });
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AlertCircle, ArrowRight, Copy, Download, Loader2, RefreshCw, Sparkles, Upload, X, Zap, Video as VideoIcon, Image as ImageIcon, Film } from 'lucide-react';
+import { AlertCircle, ArrowRight, Copy, Download, Loader2, RefreshCw, Sparkles, Upload, X, Zap, Video as VideoIcon, Image as ImageIcon, Film, Monitor, Smartphone, Maximize2 } from 'lucide-react';
 import { AppState, ImageData, VideoData } from './types';
 import { generateImageEdit, analyzeImage, identifyFeatures, generateVideo, analyzeVideo } from './services/geminiService';
 import { StepIndicator } from './components/StepIndicator';
@@ -21,6 +21,10 @@ const App: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [detectedFeatures, setDetectedFeatures] = useState<string[]>([]);
+  
+  // Video Options
+  const [videoResolution, setVideoResolution] = useState<'720p' | '1080p'>('720p');
+  const [videoAspectRatio, setVideoAspectRatio] = useState<'16:9' | '9:16'>('16:9');
   
   // Mode selection
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image');
@@ -139,7 +143,7 @@ const App: React.FC = () => {
 
       setAppState(AppState.VIDEO_GENERATING);
       try {
-        const result = await generateVideo(originalImage, prompt);
+        const result = await generateVideo(originalImage, prompt, videoResolution, videoAspectRatio);
         setGeneratedVideo(result);
         setAppState(AppState.RESULT);
       } catch (e: any) {
@@ -208,6 +212,8 @@ const App: React.FC = () => {
     setDetectedFeatures([]);
     setMediaType('image');
     setMode('image');
+    setVideoResolution('720p');
+    setVideoAspectRatio('16:9');
   };
 
   const handleRefine = () => {
@@ -428,11 +434,60 @@ const App: React.FC = () => {
                            </button>
                            <button 
                              onClick={handleAnalyze}
-                             className="flex-1 flex items-center justify-center gap-2 border border-neutral-200 py-3 px-4 hover:border-black transition-colors group"
+                             disabled={isAnalyzing}
+                             className="flex-1 flex items-center justify-center gap-2 border border-neutral-200 py-3 px-4 hover:border-black transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
                            >
-                             <Sparkles size={14} className="text-neutral-400 group-hover:text-black"/>
-                             <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 group-hover:text-black">Auto-Suggest</span>
+                             <Sparkles size={14} className={`text-neutral-400 group-hover:text-black ${isAnalyzing ? 'animate-spin text-black' : ''}`}/>
+                             <span className={`text-[10px] font-bold uppercase tracking-widest group-hover:text-black ${isAnalyzing ? 'text-black' : 'text-neutral-400'}`}>
+                               {isAnalyzing ? 'Thinking...' : 'Auto-Suggest'}
+                             </span>
                            </button>
+                        </div>
+                    )}
+
+                    {/* Video Options */}
+                    {mode === 'video' && (
+                        <div className="mb-8 grid grid-cols-2 gap-6 animate-in fade-in">
+                           <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <Monitor size={12} className="text-neutral-400"/>
+                                <span className="text-[10px] font-bold uppercase tracking-ultra text-neutral-400">Aspect Ratio</span>
+                              </div>
+                              <div className="flex gap-2">
+                                 <button 
+                                    onClick={() => setVideoAspectRatio('16:9')}
+                                    className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-ultra transition-all ${videoAspectRatio === '16:9' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200 hover:border-black hover:text-black'}`}
+                                 >
+                                    16:9
+                                 </button>
+                                 <button 
+                                    onClick={() => setVideoAspectRatio('9:16')}
+                                    className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-ultra transition-all ${videoAspectRatio === '9:16' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200 hover:border-black hover:text-black'}`}
+                                 >
+                                    9:16
+                                 </button>
+                              </div>
+                           </div>
+                           <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <Maximize2 size={12} className="text-neutral-400"/>
+                                <span className="text-[10px] font-bold uppercase tracking-ultra text-neutral-400">Resolution</span>
+                              </div>
+                              <div className="flex gap-2">
+                                 <button 
+                                    onClick={() => setVideoResolution('720p')}
+                                    className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-ultra transition-all ${videoResolution === '720p' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200 hover:border-black hover:text-black'}`}
+                                 >
+                                    720p
+                                 </button>
+                                 <button 
+                                    onClick={() => setVideoResolution('1080p')}
+                                    className={`flex-1 py-3 border text-[10px] font-bold uppercase tracking-ultra transition-all ${videoResolution === '1080p' ? 'bg-black text-white border-black' : 'bg-white text-neutral-400 border-neutral-200 hover:border-black hover:text-black'}`}
+                                 >
+                                    1080p
+                                 </button>
+                              </div>
+                           </div>
                         </div>
                     )}
 
