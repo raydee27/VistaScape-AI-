@@ -99,24 +99,24 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
       aria-valuenow={sliderPosition}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label="Comparison slider: Left side is Current, Right side is Proposal"
+      aria-label="Comparison slider: Left side is Proposal, Right side is Current"
     >
-      {/* Background (After / Proposal) */}
+      {/* Background (Before / Current) - Revealed when slider moves Left */}
       <img 
-        src={afterImage.base64} 
-        alt="Proposed Design" 
+        src={beforeImage.base64} 
+        alt="Original Condition" 
         className="absolute inset-0 w-full h-full object-cover"
         draggable={false}
       />
 
-      {/* Foreground (Before / Current) - Clipped */}
+      {/* Foreground (After / Proposal) - Clipped, Revealed when slider moves Right */}
       <div 
         className="absolute inset-0 w-full h-full will-change-[clip-path]"
         style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
       >
         <img 
-          src={beforeImage.base64} 
-          alt="Original Condition" 
+          src={afterImage.base64} 
+          alt="Proposed Design" 
           className="absolute inset-0 w-full h-full object-cover" 
           draggable={false}
         />
@@ -130,8 +130,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
         className="absolute top-6 left-6 pointer-events-none transition-all duration-300 z-10"
         style={{ opacity: sliderPosition > 15 ? 1 : 0, transform: `translateX(${sliderPosition > 15 ? 0 : -20}px)` }}
       >
-        <div className="bg-white/95 backdrop-blur-md text-black px-4 py-2 text-[10px] font-bold uppercase tracking-ultra shadow-lg border border-white/20">
-          Current
+        <div className="bg-black/80 backdrop-blur-md text-white px-4 py-2 text-[10px] font-bold uppercase tracking-ultra shadow-lg border border-white/10">
+          Proposal
         </div>
       </div>
       
@@ -139,8 +139,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
         className="absolute top-6 right-6 pointer-events-none transition-all duration-300 z-10"
         style={{ opacity: sliderPosition < 85 ? 1 : 0, transform: `translateX(${sliderPosition < 85 ? 0 : 20}px)` }}
       >
-        <div className="bg-black/80 backdrop-blur-md text-white px-4 py-2 text-[10px] font-bold uppercase tracking-ultra shadow-lg border border-white/10">
-          Proposal
+        <div className="bg-white/95 backdrop-blur-md text-black px-4 py-2 text-[10px] font-bold uppercase tracking-ultra shadow-lg border border-white/20">
+          Current
         </div>
       </div>
 

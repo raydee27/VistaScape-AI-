@@ -26,7 +26,7 @@ export const generateImageEdit = async (
       contents: {
         parts: [
           {
-            text: `${userPrompt} \n\n(Generate a high-quality result preserving the core content of the image while applying the requested changes.)`
+            text: `${userPrompt} \n\n(IMPORTANT: Generate a photorealistic result. Maintain strict visual consistency including lighting, shadows, textures, depth, and perspective. Ensure the changes integrate naturally with the existing environment, seasons, and lighting conditions.)`
           },
           {
             inlineData: {
@@ -74,7 +74,7 @@ export const identifyFeatures = async (
       contents: {
         parts: [
           {
-            text: "Analyze this image and identify 5-7 key physical elements present (e.g., 'Oak Tree', 'Paved Patio', 'Wooden Fence', 'Swimming Pool', 'Overgrown Lawn', 'Modern House'). Return the response as a simple comma-separated list."
+            text: "Analyze this landscaping scene. Identify 5-7 key physical elements (e.g., specific plant types, hardscape materials, architectural features, lighting elements). Return a simple comma-separated list."
           },
           {
             inlineData: {
@@ -112,10 +112,11 @@ export const analyzeImage = async (
       contents: {
         parts: [
           {
-            text: `Analyze this image. 
-            Identify the key features.
-            Then, suggest 3-4 specific, creative visual improvements or edits (like filters, object removals, or landscaping changes).
-            Write the response as a cohesive, inspiring vision statement that I can use as a prompt for generation. 
+            text: `Act as an expert landscape architect. Analyze this image. 
+            1. Identify key features (terrain, volumes, materials, light).
+            2. Suggest 3-4 specific, creative visual improvements (seasonal plantings, hardscaping, lighting).
+            3. Consider ecological impact and maintenance.
+            Write the response as a cohesive, inspiring vision statement I can use as a prompt for generation. 
             Keep it under 150 words.`
           },
           {
@@ -151,7 +152,7 @@ export const analyzeVideo = async (
       contents: {
         parts: [
           {
-            text: prompt || "Analyze this video in detail. Describe the scene, key objects, actions, and any notable visual characteristics."
+            text: prompt || "Analyze this video from a landscaping perspective. Describe the flow of the space, light changes, key features, and potential areas for improvement."
           },
           {
             inlineData: {
@@ -183,7 +184,7 @@ export const generateVideo = async (
   try {
     let operation = await ai.models.generateVideos({
       model: 'veo-3.1-fast-generate-preview',
-      prompt: prompt,
+      prompt: `${prompt} (Cinematic landscaping visualization, high quality, photorealistic, smooth motion)`,
       image: {
         imageBytes: base64Data,
         mimeType: originalImage.mimeType,
@@ -264,7 +265,23 @@ export const sendChatMessage = async (
       model: 'gemini-3-pro-preview',
       history: sdkHistory,
       config: {
-        systemInstruction: "You are a helpful landscaping and design assistant for VistaScape AI. Your goal is to help users visualize property transformations. \n\nCAPABILITIES:\n1. Analyze uploaded images: Identify plants, styles, hardscaping features, and potential improvements.\n2. Provide design advice: Suggest plants for specific climates, color palettes, and layout ideas.\n3. Answer questions: Help with app usage or general landscaping queries.\n\nTONE: Professional, encouraging, and concise.",
+        systemInstruction: `You are Gemini, an AI expert in architecture, interior/exterior design, and landscaping.
+
+MISSION:
+1. Precisely understand the scene (terrain, volumes, materials, vegetation, furniture).
+2. Maintain visual consistency: shadows, light, textures, depth, perspective.
+3. Simulate seasons, weather, dynamic lighting, plant growth, and material aging.
+4. Provide design variants (style, materials, budget).
+
+CONSTRAINTS:
+- Always respond in a structured and clear manner.
+- Generate perfectly valid JSON if requested.
+- Describe steps only if explicitly asked.
+- Provide advice that considers ecological impact and real-world feasibility.
+- When an object is modified, consider light, shadows, ground texture, climatic consistency, perspective, and ecological impact.
+- Respect the global style of the scene and real terrain constraints.
+
+TONE: Professional, expert, encouraging, and concise.`,
       }
     });
 
