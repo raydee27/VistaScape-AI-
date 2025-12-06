@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { MessageSquare, X, ArrowUp, Loader2, Image as ImageIcon, Plus } from 'lucide-react';
 import { ChatMessage, ImageData } from '../types';
 import { sendChatMessage } from '../services/geminiService';
 
 export const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Welcome. I am your design assistant. How may I assist with your vision today?' }
+    { role: 'model', text: 'VistaScape AI Assistant online. Awaiting design inquiry.' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ export const ChatBot: React.FC = () => {
       const botMsg: ChatMessage = { role: 'model', text: responseText };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: "Service temporarily unavailable. Please try again." }]);
+      setMessages(prev => [...prev, { role: 'model', text: "Service temporarily unavailable." }]);
     } finally {
       setIsLoading(false);
     }
@@ -114,67 +114,58 @@ export const ChatBot: React.FC = () => {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-8 right-8 z-[90] w-14 h-14 bg-black text-white hover:bg-neutral-800 transition-all duration-300 flex items-center justify-center border border-transparent hover:border-black hover:bg-white hover:text-black
-          ${isOpen ? 'rotate-90' : ''}
+        className={`fixed bottom-0 right-8 z-[90] w-16 h-16 bg-black text-white flex items-center justify-center transition-all duration-300
+          ${isOpen ? 'translate-y-0' : '-translate-y-0'} hover:bg-neutral-800
         `}
         aria-label="Toggle Chat"
       >
-        {isOpen ? <X size={24} strokeWidth={1.5} /> : <MessageCircle size={24} strokeWidth={1.5} />}
+        {isOpen ? <X size={20} strokeWidth={1} /> : <MessageSquare size={20} strokeWidth={1} />}
       </button>
 
       <div 
-        className={`fixed bottom-28 right-8 w-[90vw] md:w-96 bg-white border border-black z-[90] flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right
-          ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none translate-y-4'}
+        className={`fixed bottom-16 right-8 w-[90vw] md:w-[400px] bg-white border border-black z-[80] flex flex-col transition-all duration-500 origin-bottom-right shadow-2xl
+          ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-8 pointer-events-none'}
         `}
-        style={{ height: '500px', maxHeight: '70vh' }}
+        style={{ height: '600px', maxHeight: '75vh' }}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        {/* Drag Overlay */}
-        {isDragging && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center border-2 border-dashed border-black m-4">
-            <div className="flex flex-col items-center">
-              <ImageIcon size={32} className="text-black mb-2" strokeWidth={1} />
-              <span className="text-black font-bold uppercase tracking-widest text-xs">Drop image</span>
-            </div>
-          </div>
-        )}
-
         {/* Header */}
-        <div className="bg-black p-5 flex items-center gap-3 text-white shrink-0">
-          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+        <div className="bg-black p-6 flex justify-between items-center text-white shrink-0">
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-[0.2em]">Assistant</h3>
+            <h3 className="serif-title text-lg leading-none mb-1">Concierge</h3>
+            <div className="text-[10px] font-bold uppercase tracking-ultra opacity-70">Design Assistant</div>
           </div>
+          <div className="w-2 h-2 bg-white animate-pulse"></div>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white scrollbar-thin scrollbar-thumb-black">
+        <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-white scrollbar-thin scrollbar-thumb-black">
           {messages.map((msg, index) => (
             <div 
               key={index} 
               className={`flex flex-col gap-2 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
             >
-              <span className="text-[10px] uppercase text-neutral-400 font-medium tracking-wider">
-                {msg.role === 'user' ? 'You' : 'VistaScape'}
+              <span className="text-[9px] uppercase text-neutral-400 font-bold tracking-ultra">
+                {msg.role === 'user' ? 'Client' : 'System'}
               </span>
               
-              <div className={`max-w-[85%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div className={`max-w-[90%] ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                 {msg.image && (
                   <img 
                     src={msg.image.base64} 
-                    alt="Uploaded content" 
-                    className="mb-2 max-h-48 object-cover border border-neutral-200"
+                    alt="Context" 
+                    className="mb-4 w-32 h-32 object-cover border border-black"
                   />
                 )}
-                <div className={`text-sm leading-relaxed font-light ${
+                <div className={`text-sm leading-loose font-serif ${
                   msg.role === 'user' 
                     ? 'text-black' 
                     : 'text-neutral-600'
                 }`}>
-                  {msg.text || (msg.image ? "Analyzed this image." : "")}
+                  {msg.text || (msg.image ? "Image attached for reference." : "")}
                 </div>
               </div>
             </div>
@@ -182,10 +173,11 @@ export const ChatBot: React.FC = () => {
           
           {isLoading && (
             <div className="flex flex-col items-start gap-2">
-               <span className="text-[10px] uppercase text-neutral-400 font-medium tracking-wider">VistaScape</span>
-               <div className="flex items-center gap-2 text-neutral-400">
-                  <Loader2 size={14} className="animate-spin" />
-                  <span className="text-xs font-light">Processing...</span>
+               <span className="text-[9px] uppercase text-neutral-400 font-bold tracking-ultra">System</span>
+               <div className="flex items-center gap-3">
+                  <div className="w-1 h-1 bg-black animate-bounce"></div>
+                  <div className="w-1 h-1 bg-black animate-bounce delay-100"></div>
+                  <div className="w-1 h-1 bg-black animate-bounce delay-200"></div>
                </div>
             </div>
           )}
@@ -193,24 +185,25 @@ export const ChatBot: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white border-t border-neutral-100 shrink-0">
+        <div className="p-6 bg-white border-t border-black shrink-0">
           {selectedImage && (
-            <div className="mb-3 relative inline-block">
+            <div className="mb-4 flex items-center gap-4 bg-neutral-50 p-2 border border-neutral-200">
               <img 
                 src={selectedImage.base64} 
                 alt="Selected" 
-                className="h-16 w-16 object-cover border border-neutral-200" 
+                className="h-10 w-10 object-cover grayscale" 
               />
+              <span className="text-[10px] uppercase font-bold tracking-widest flex-1">Image Attached</span>
               <button 
                 onClick={() => setSelectedImage(null)}
-                className="absolute -top-2 -right-2 bg-black text-white p-1 hover:bg-neutral-800"
+                className="hover:bg-black hover:text-white p-1 transition-colors"
               >
-                <X size={10} />
+                <X size={12} />
               </button>
             </div>
           )}
           
-          <div className="relative flex items-end gap-2">
+          <div className="flex items-center gap-0 border-b border-black pb-2">
             <input 
               type="file" 
               ref={fileInputRef}
@@ -220,20 +213,19 @@ export const ChatBot: React.FC = () => {
             />
             <button 
               onClick={() => fileInputRef.current?.click()}
-              className="p-3 text-neutral-400 hover:text-black transition-colors"
-              title="Upload"
+              className="pr-4 text-neutral-400 hover:text-black transition-colors"
             >
-              <Paperclip size={18} strokeWidth={1.5} />
+              <Plus size={20} strokeWidth={1} />
             </button>
 
-            <div className="relative flex-1">
+            <div className="flex-1">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder={selectedImage ? "Add instructions..." : "Type your message..."}
-                className="w-full p-3 bg-transparent border-b border-neutral-200 focus:border-black text-sm outline-none transition-all placeholder:text-neutral-300 font-light"
+                placeholder="Type directive..."
+                className="w-full bg-transparent border-none focus:ring-0 text-sm font-light placeholder:text-neutral-300 outline-none"
                 disabled={isLoading}
               />
             </div>
@@ -241,9 +233,9 @@ export const ChatBot: React.FC = () => {
             <button
               onClick={handleSend}
               disabled={(!inputValue.trim() && !selectedImage) || isLoading}
-              className="p-3 text-black hover:opacity-70 disabled:opacity-30 transition-opacity"
+              className="pl-4 text-black hover:opacity-50 disabled:opacity-20 transition-opacity"
             >
-              <Send size={18} strokeWidth={1.5} />
+              <ArrowUp size={20} strokeWidth={1} />
             </button>
           </div>
         </div>

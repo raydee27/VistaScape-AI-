@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ImageData } from '../types';
-import { ChevronsLeftRight } from 'lucide-react';
 
 interface ComparisonSliderProps {
   beforeImage: ImageData;
@@ -81,7 +80,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
   return (
     <div 
       ref={containerRef}
-      className="relative w-full aspect-video overflow-hidden bg-neutral-100 select-none group cursor-pointer border border-neutral-200"
+      className="relative w-full aspect-video overflow-hidden bg-white select-none group cursor-pointer border border-black"
       onMouseMove={onMouseMove}
       onTouchMove={onTouchMove}
       onMouseLeave={() => setIsDragging(false)}
@@ -95,8 +94,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
       />
       
       {/* Label After */}
-      <div className="absolute top-0 right-0 bg-black text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold z-10 pointer-events-none">
-        AFTER
+      <div className="absolute top-0 right-0 bg-black text-white px-6 py-3 border-l border-b border-white z-10 pointer-events-none">
+        <span className="text-[10px] tracking-ultra font-bold uppercase">Proposal</span>
       </div>
 
       {/* Before Image (Clipped) */}
@@ -107,23 +106,24 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
         <img 
           src={beforeImage.base64} 
           alt="Before landscaping" 
-          className="absolute inset-0 w-full h-full object-cover grayscale-[20%]" 
+          className="absolute inset-0 w-full h-full object-cover grayscale" 
         />
         {/* Label Before */}
-        <div className="absolute top-0 left-0 bg-white text-black border-r border-b border-black px-4 py-2 text-[10px] tracking-[0.2em] font-bold z-10 pointer-events-none">
-          BEFORE
+        <div className="absolute top-0 left-0 bg-white text-black px-6 py-3 border-r border-b border-black z-10 pointer-events-none">
+           <span className="text-[10px] tracking-ultra font-bold uppercase">Current</span>
         </div>
       </div>
 
       {/* Slider Handle */}
       <div 
-        className="slider-handle absolute top-0 bottom-0 w-[1px] bg-white cursor-col-resize z-20 flex items-center justify-center hover:bg-white transition-colors"
+        className="slider-handle absolute top-0 bottom-0 w-[1px] bg-white cursor-col-resize z-20 flex items-center justify-center"
         style={{ left: `${sliderPosition}%` }}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
       >
-        <div className="w-8 h-8 bg-black border border-white flex items-center justify-center -ml-4 text-white hover:scale-110 transition-transform duration-300">
-           <ChevronsLeftRight size={14} />
+        <div className="w-12 h-12 bg-black border border-white flex items-center justify-center -ml-[1px] hover:scale-110 transition-transform duration-300">
+           <div className="w-[1px] h-4 bg-white mx-1"></div>
+           <div className="w-[1px] h-4 bg-white mx-1"></div>
         </div>
       </div>
     </div>
