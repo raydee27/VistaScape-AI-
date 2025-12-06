@@ -124,7 +124,6 @@ const App: React.FC = () => {
         setAppState(AppState.DESCRIBE);
       }
     } else if (mode === 'video') {
-      // Video generation requires paid key selection
       const aistudio = (window as any).aistudio;
       if (aistudio) {
         const hasKey = await aistudio.hasSelectedApiKey();
@@ -227,28 +226,29 @@ const App: React.FC = () => {
 
   if (showFullPreview && generatedImage && mode === 'image') {
     return (
-      <div className="fixed inset-0 z-[100] bg-black flex flex-col animate-in fade-in duration-300">
-        <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-start z-50 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
-            <div className="pointer-events-auto flex items-center gap-4 text-white">
+      <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-in fade-in duration-300">
+        <div className="absolute top-0 left-0 right-0 p-8 flex items-center justify-between z-50 pointer-events-none">
+            <div className="pointer-events-auto flex items-center gap-4 text-black">
                 <button 
                     onClick={() => setShowFullPreview(false)}
-                    className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors backdrop-blur-sm outline-none group"
+                    className="bg-white hover:bg-black hover:text-white p-3 border border-black transition-colors"
                 >
-                    <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+                    <ArrowLeft size={24} />
                 </button>
-                <span className="font-medium text-lg text-shadow-sm truncate max-w-md md:max-w-xl">
-                    {fileName || "Generated Image"}
+                <span className="font-bold text-lg uppercase tracking-widest bg-white px-2">
+                    {fileName || "PREVIEW"}
                 </span>
             </div>
+             <button 
+                onClick={() => setShowFullPreview(false)}
+                className="pointer-events-auto flex items-center gap-2 bg-black hover:bg-neutral-800 text-white px-6 py-3 transition-all cursor-pointer"
+            >
+                <span className="font-bold tracking-widest text-xs uppercase">Close</span>
+                <X size={16} />
+            </button>
         </div>
-        <button 
-            onClick={() => setShowFullPreview(false)}
-            className="fixed top-6 right-6 z-[110] flex items-center gap-2 bg-black/60 hover:bg-black/80 text-white px-5 py-2.5 rounded-full backdrop-blur-md border border-white/10 transition-all shadow-lg hover:shadow-white/5 active:scale-95 cursor-pointer group"
-        >
-            <span className="font-medium tracking-wide">Return</span>
-            <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-        </button>
-        <div className="flex-1 w-full h-full p-4 md:p-8 flex items-center justify-center overflow-hidden">
+       
+        <div className="flex-1 w-full h-full p-8 md:p-16 flex items-center justify-center overflow-hidden bg-neutral-100">
              <img 
                 src={generatedImage.base64} 
                 alt="Full Generated Preview" 
@@ -260,53 +260,54 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-earth-50 text-gray-800 font-sans selection:bg-leaf-200">
-      <nav className="bg-white border-b border-earth-200 px-6 py-4 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-leaf-700">
-            <Sparkles size={24} className="text-leaf-500" />
-            <span className="text-xl font-bold tracking-tight">VistaScape AI</span>
+    <div className="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white">
+      <nav className="bg-white border-b border-black px-6 py-6 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-black flex items-center justify-center text-white">
+               <Sparkles size={16} />
+            </div>
+            <span className="text-2xl font-bold tracking-[0.2em] uppercase">VistaScape</span>
           </div>
-          <div className="text-sm font-medium text-gray-500 hidden sm:block">
-            Professional Image & Video Visualization
+          <div className="text-xs font-bold uppercase tracking-widest text-neutral-400 hidden sm:block">
+            AI Design Studio
           </div>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 md:py-12 relative">
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16 relative">
         <StepIndicator currentState={appState} />
 
-        <div className="bg-white rounded-2xl shadow-xl border border-earth-100 overflow-hidden min-h-[500px] flex flex-col relative transition-all duration-300">
+        <div className="bg-white min-h-[600px] flex flex-col relative transition-all duration-300">
           
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 m-4 rounded-md flex items-start gap-3">
-              <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="bg-neutral-50 border-l-2 border-black p-4 mb-8 flex items-start gap-3">
+              <AlertCircle className="text-black shrink-0 mt-0.5" size={18} />
+              <p className="text-sm font-medium">{error}</p>
             </div>
           )}
 
           {/* ----- UPLOAD STATE ----- */}
           {appState === AppState.UPLOAD && (
-            <div className="flex flex-col items-center justify-center flex-1 p-8 md:p-16 text-center animate-in fade-in duration-500">
+            <div className="flex flex-col items-center justify-center flex-1 py-12 text-center animate-in fade-in duration-500">
               <div 
                 onClick={triggerFileSelect}
                 onDragEnter={handleDragEnter}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`w-full max-w-lg border-2 border-dashed rounded-2xl p-12 transition-all cursor-pointer group flex flex-col items-center gap-4 ${
+                className={`w-full max-w-2xl border border-dashed p-16 transition-all cursor-pointer group flex flex-col items-center gap-6 ${
                   isDragging 
-                    ? 'border-leaf-600 bg-leaf-100 ring-4 ring-leaf-100' 
-                    : 'border-leaf-300 hover:border-leaf-500 bg-leaf-50 hover:bg-leaf-100'
+                    ? 'border-black bg-neutral-50' 
+                    : 'border-neutral-300 hover:border-black bg-white'
                 }`}
               >
-                <div className="bg-white p-4 rounded-full shadow-md group-hover:scale-110 transition-transform">
-                  <UploadCloud size={40} className="text-leaf-600" />
+                <div className="bg-black text-white p-5 group-hover:scale-110 transition-transform duration-500">
+                  <UploadCloud size={32} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2">Upload Photo or Video</h2>
-                  <p className="text-gray-500 mb-4">Drag and drop or click to browse</p>
-                  <span className="text-xs text-gray-400">Supports Images & Videos</span>
+                  <h2 className="text-2xl font-bold uppercase tracking-widest mb-3">Upload Media</h2>
+                  <p className="text-neutral-500 font-light text-sm">Drag and drop or click to browse</p>
                 </div>
                 <input 
                   type="file" 
@@ -316,18 +317,18 @@ const App: React.FC = () => {
                   className="hidden" 
                 />
               </div>
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl text-left">
-                 <div className="bg-earth-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-earth-800 mb-1">Visual Edit</h3>
-                    <p className="text-xs text-gray-600">Upload an image to transform spaces with AI powered editing.</p>
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl text-left">
+                 <div className="border border-neutral-100 p-6 hover:border-black transition-colors duration-300">
+                    <h3 className="font-bold uppercase tracking-wider text-sm mb-2">Visual Edit</h3>
+                    <p className="text-xs text-neutral-500 font-light leading-relaxed">Transform spaces with high-fidelity AI editing. Perfect for renovations and styling.</p>
                  </div>
-                 <div className="bg-earth-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-earth-800 mb-1">Animate</h3>
-                    <p className="text-xs text-gray-600">Turn static images into stunning videos using Veo.</p>
+                 <div className="border border-neutral-100 p-6 hover:border-black transition-colors duration-300">
+                    <h3 className="font-bold uppercase tracking-wider text-sm mb-2">Motion (Veo)</h3>
+                    <p className="text-xs text-neutral-500 font-light leading-relaxed">Bring static environments to life with cinematic video generation.</p>
                  </div>
-                 <div className="bg-earth-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-earth-800 mb-1">Video Insight</h3>
-                    <p className="text-xs text-gray-600">Upload videos to get detailed analysis and understanding.</p>
+                 <div className="border border-neutral-100 p-6 hover:border-black transition-colors duration-300">
+                    <h3 className="font-bold uppercase tracking-wider text-sm mb-2">Analysis</h3>
+                    <p className="text-xs text-neutral-500 font-light leading-relaxed">Deep understanding of video content for insights and descriptions.</p>
                  </div>
               </div>
             </div>
@@ -335,13 +336,13 @@ const App: React.FC = () => {
 
           {/* ----- DESCRIBE STATE ----- */}
           {(appState === AppState.DESCRIBE || isGenerating) && originalImage && (
-            <div className="flex flex-col lg:flex-row h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="lg:w-1/2 bg-gray-900 relative min-h-[300px] lg:min-h-full flex items-center justify-center overflow-hidden">
+            <div className="flex flex-col lg:flex-row h-full animate-in fade-in slide-in-from-bottom-4 duration-500 border border-neutral-200">
+              <div className="lg:w-1/2 bg-neutral-100 relative min-h-[400px] lg:min-h-full flex items-center justify-center overflow-hidden border-b lg:border-b-0 lg:border-r border-neutral-200">
                 {mediaType === 'image' ? (
                   <img 
                     src={originalImage.base64} 
                     alt="Original" 
-                    className="w-full h-full object-cover absolute inset-0 opacity-80"
+                    className="w-full h-full object-cover absolute inset-0 grayscale-[10%]"
                   />
                 ) : (
                   <video
@@ -351,103 +352,94 @@ const App: React.FC = () => {
                   />
                 )}
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6 pointer-events-none">
-                  <span className="text-white/80 text-xs font-semibold uppercase tracking-wider mb-1">Step 2</span>
-                  <h2 className="text-white text-2xl font-bold">
-                    {mediaType === 'image' ? 'Describe Your Vision' : 'Analyze Video'}
-                  </h2>
+                <div className="absolute top-0 left-0 bg-black text-white px-4 py-2">
+                  <span className="text-xs font-bold uppercase tracking-widest">Original</span>
                 </div>
               </div>
 
-              <div className="lg:w-1/2 p-6 md:p-8 flex flex-col">
+              <div className="lg:w-1/2 p-8 md:p-12 flex flex-col bg-white">
                 <div className="flex-1">
                   
                   {/* Mode Selector - Only for Images */}
                   {mediaType === 'image' && (
-                    <div className="bg-earth-100 p-1 rounded-xl flex mb-6">
+                    <div className="flex mb-8 border border-black">
                       <button
                         onClick={() => setMode('image')}
                         disabled={isGenerating}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all ${
-                          mode === 'image' ? 'bg-white text-leaf-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all ${
+                          mode === 'image' ? 'bg-black text-white' : 'bg-white text-neutral-400 hover:text-black'
                         }`}
                       >
-                        <ImageIcon size={16} />
                         Image Edit
                       </button>
                       <button
                         onClick={() => setMode('video')}
                         disabled={isGenerating}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all ${
-                          mode === 'video' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all ${
+                          mode === 'video' ? 'bg-black text-white' : 'bg-white text-neutral-400 hover:text-black border-l border-neutral-200'
                         }`}
                       >
-                        <VideoIcon size={16} />
-                        Animate (Veo)
+                        Animate
                       </button>
                     </div>
                   )}
 
                   {/* Video Analysis Header */}
                   {mediaType === 'video' && (
-                    <div className="mb-6 p-4 rounded-xl border border-indigo-100 bg-indigo-50 flex items-center gap-3">
-                       <div className="p-2 bg-indigo-100 rounded-full text-indigo-600">
-                         <FileVideo size={20} />
+                    <div className="mb-8 p-4 border border-black flex items-center gap-4 bg-neutral-50">
+                       <div className="p-2 bg-black text-white">
+                         <FileVideo size={20} strokeWidth={1.5} />
                        </div>
                        <div>
-                         <h3 className="font-bold text-indigo-900">Video Understanding</h3>
-                         <p className="text-xs text-indigo-700">Gemini 3.0 Pro will analyze this clip.</p>
+                         <h3 className="font-bold text-xs uppercase tracking-widest">Video Understanding</h3>
+                         <p className="text-[10px] uppercase text-neutral-500 mt-1">Gemini 3.0 Pro Analysis</p>
                        </div>
                     </div>
                   )}
 
                   {/* Gemini Intelligence (Image Mode Only) */}
                   {mediaType === 'image' && mode === 'image' && (
-                    <div className="mb-6 p-4 rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-white shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                         <Sparkles size={16} className="text-indigo-600" />
-                         <h3 className="text-sm font-bold text-indigo-900 tracking-tight">Gemini Intelligence</h3>
+                    <div className="mb-8">
+                      <div className="flex items-center gap-2 mb-4">
+                         <Sparkles size={14} className="text-black" />
+                         <h3 className="text-xs font-bold uppercase tracking-widest">Intelligence</h3>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-4">
                           <button
                             onClick={handleScanFeatures}
                             disabled={isScanning || isAnalyzing || isGenerating}
-                            className="flex flex-col items-start p-3 rounded-lg border border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md transition-all text-left group"
+                            className="flex items-center justify-between p-4 border border-neutral-200 hover:border-black transition-all group text-left"
                           >
-                             <div className="flex items-center gap-2 mb-1 text-indigo-700">
-                               <Zap size={14} className={isScanning ? "animate-pulse" : ""} />
-                               <span className="text-xs font-bold uppercase tracking-wider">Smart Scan</span>
+                             <div>
+                               <span className="text-[10px] font-bold uppercase tracking-wider block mb-1">Scan</span>
+                               <span className="text-[10px] text-neutral-400 font-light">Detect elements</span>
                              </div>
-                             <p className="text-[10px] text-gray-500 leading-tight">
-                                {isScanning ? "Scanning..." : "Detect elements (Flash)"}
-                             </p>
+                             <Zap size={14} className={`text-neutral-300 group-hover:text-black ${isScanning ? "animate-pulse" : ""}`} />
                           </button>
                           <button
                             onClick={handleAnalyze}
                             disabled={isScanning || isAnalyzing || isGenerating}
-                            className="flex flex-col items-start p-3 rounded-lg border border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md transition-all text-left group"
+                            className="flex items-center justify-between p-4 border border-neutral-200 hover:border-black transition-all group text-left"
                           >
-                             <div className="flex items-center gap-2 mb-1 text-indigo-700">
-                               {isAnalyzing ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
-                               <span className="text-xs font-bold uppercase tracking-wider">Vision Draft</span>
+                             <div>
+                               <span className="text-[10px] font-bold uppercase tracking-wider block mb-1">Draft</span>
+                               <span className="text-[10px] text-neutral-400 font-light">Auto-suggestion</span>
                              </div>
-                             <p className="text-[10px] text-gray-500 leading-tight">
-                                {isAnalyzing ? "Analyzing..." : "Create detailed plan (Pro)"}
-                             </p>
+                             {isAnalyzing ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} className="text-neutral-300 group-hover:text-black" />}
                           </button>
                       </div>
                       {detectedFeatures.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-indigo-50 animate-in slide-in-from-top-2">
-                          <div className="flex items-center gap-1 mb-2 text-xs text-gray-500">
+                        <div className="mt-4 pt-4 border-t border-neutral-100 animate-in slide-in-from-top-2">
+                          <div className="flex items-center gap-2 mb-3 text-[10px] uppercase tracking-wider text-neutral-400">
                              <Tags size={12} />
-                             <span>Detected Elements (Click to keep)</span>
+                             <span>Detected</span>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {detectedFeatures.map((feature, idx) => (
                                <button
                                  key={idx}
                                  onClick={() => addFeatureToPrompt(feature)}
-                                 className="px-2 py-1 bg-white border border-indigo-100 rounded text-[10px] font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                                 className="px-3 py-1 border border-neutral-200 text-[10px] font-medium uppercase tracking-wide hover:bg-black hover:text-white transition-colors"
                                >
                                  {feature}
                                </button>
@@ -458,43 +450,43 @@ const App: React.FC = () => {
                     </div>
                   )}
 
-                  <label className="text-sm font-semibold text-gray-700 block mb-2">
+                  <label className="text-xs font-bold uppercase tracking-widest block mb-4">
                     {mode === 'image' 
-                        ? 'What changes would you like to see?' 
+                        ? 'Directives' 
                         : mode === 'video' 
-                          ? 'How should this scene be animated?'
-                          : 'What would you like to know about this video?'}
+                          ? 'Motion Prompt'
+                          : 'Inquiry'}
                   </label>
                   
-                  <div className="relative">
+                  <div className="relative group">
                     <textarea
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       placeholder={
-                        mode === 'analysis' ? "Ask about the video... e.g., 'Describe the backyard features', 'What style is the patio?'" :
+                        mode === 'analysis' ? "Ask about the video..." :
                         mode === 'image' 
-                        ? "Describe your vision... e.g., 'Add a retro filter', 'Remove the person in the background', 'Add a pool'."
-                        : "Describe the motion... e.g., 'Cinematic pan of the garden', 'Trees swaying in the wind'."
+                        ? "Describe changes..."
+                        : "Describe motion..."
                       }
-                      className="w-full h-32 p-4 pb-12 rounded-xl border border-gray-200 focus:border-leaf-500 focus:ring-2 focus:ring-leaf-200 resize-none transition-all outline-none text-gray-700 text-base leading-relaxed bg-earth-50/50"
+                      className="w-full h-40 p-6 bg-neutral-50 border border-neutral-200 focus:border-black focus:ring-0 resize-none transition-all outline-none text-sm font-light leading-relaxed placeholder:text-neutral-300"
                       disabled={isGenerating}
                     />
                     <button
                       onClick={() => navigator.clipboard.writeText(prompt)}
-                      className="absolute bottom-3 right-3 p-1.5 text-gray-400 hover:text-leaf-600 bg-white/50 hover:bg-white rounded-lg transition-all group"
+                      className="absolute bottom-4 right-4 p-2 text-neutral-300 hover:text-black transition-colors"
                       type="button"
                     >
-                      <Copy size={18} />
+                      <Copy size={16} />
                     </button>
                   </div>
                   
                   {mode === 'image' && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {['Add a pool', 'Remove person', 'Retro filter', 'Modern style'].map((tag) => (
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {['Pool', 'Minimalist', 'Modern', 'Night'].map((tag) => (
                         <button 
                           key={tag}
                           onClick={() => setPrompt(prev => prev ? `${prev}, ${tag}` : tag)}
-                          className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600 hover:bg-leaf-50 hover:border-leaf-300 hover:text-leaf-700 transition-colors"
+                          className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-black transition-colors underline decoration-transparent hover:decoration-black underline-offset-4"
                           disabled={isGenerating}
                         >
                           + {tag}
@@ -504,32 +496,28 @@ const App: React.FC = () => {
                   )}
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
+                <div className="mt-12 pt-8 border-t border-neutral-100 flex items-center justify-between">
                   <button 
                     onClick={() => setAppState(AppState.UPLOAD)}
-                    className="text-gray-500 hover:text-gray-800 text-sm font-medium px-4 py-2"
+                    className="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-black transition-colors"
                     disabled={isGenerating}
                   >
                     Back
                   </button>
                   <button
                     onClick={handleGenerate}
-                    disabled={(!prompt.trim() && mode !== 'analysis' ) || isGenerating} // Prompt optional for simple analysis? Let's keep it required or default it.
-                    className={`${
-                      mode === 'image' ? 'bg-leaf-600 hover:bg-leaf-700 shadow-leaf-200' : 
-                      mode === 'video' ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' :
-                      'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' // Analysis style
-                    } disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all flex items-center gap-2 transform hover:-translate-y-0.5`}
+                    disabled={(!prompt.trim() && mode !== 'analysis' ) || isGenerating}
+                    className="bg-black text-white disabled:bg-neutral-200 disabled:text-neutral-400 px-10 py-4 font-bold text-xs uppercase tracking-[0.2em] hover:bg-neutral-800 transition-all flex items-center gap-3"
                   >
                     {isGenerating ? (
                       <>
-                        <Loader2 className="animate-spin" size={20} />
-                        {mode === 'analysis' ? 'Analyzing...' : mode === 'image' ? 'Generating...' : 'Animating...'}
+                        <Loader2 className="animate-spin" size={16} />
+                        Processing
                       </>
                     ) : (
                       <>
-                        {mode === 'image' ? <Sparkles size={20} /> : mode === 'video' ? <VideoIcon size={20} /> : <Wand2 size={20} />}
-                        {mode === 'image' ? 'Generate' : mode === 'video' ? 'Animate' : 'Analyze Video'}
+                        {mode === 'image' ? 'Execute' : mode === 'video' ? 'Animate' : 'Analyze'}
+                        <ArrowLeft size={16} className="rotate-180" />
                       </>
                     )}
                   </button>
@@ -540,32 +528,32 @@ const App: React.FC = () => {
 
           {/* ----- RESULT STATE ----- */}
           {appState === AppState.RESULT && (
-            <div className="flex flex-col h-full animate-in zoom-in-95 duration-500 relative">
-              <button
-                onClick={handleRefine}
-                className="absolute top-4 right-4 z-20 flex items-center gap-2 px-4 py-2 bg-white hover:bg-leaf-50 text-gray-700 hover:text-leaf-700 rounded-full shadow-lg border border-gray-200 transition-all text-sm font-semibold group"
-              >
-                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                Return
-              </button>
+            <div className="flex flex-col h-full animate-in fade-in duration-700 relative border border-neutral-200">
+              <div className="absolute top-0 right-0 z-20">
+                <button
+                    onClick={handleRefine}
+                    className="bg-white text-black px-6 py-3 text-xs font-bold uppercase tracking-widest border-l border-b border-black hover:bg-neutral-50 transition-colors"
+                >
+                    Return
+                </button>
+              </div>
 
-              <div className="flex-1 bg-gray-100 p-4 md:p-8 flex items-center justify-center">
+              <div className="flex-1 bg-white p-8 md:p-12 flex items-center justify-center min-h-[500px]">
                 <div className="w-full max-w-5xl">
                   {/* IMAGE RESULT */}
                   {mode === 'image' && originalImage && generatedImage && (
-                    <>
+                    <div className="shadow-[0_0_40px_-15px_rgba(0,0,0,0.1)]">
                       <ComparisonSlider 
                         beforeImage={originalImage} 
                         afterImage={generatedImage} 
                         onImageClick={handleImageClick}
                       />
-                      <p className="text-center text-gray-400 text-xs mt-3">Click image for full screen</p>
-                    </>
+                    </div>
                   )}
 
                   {/* VIDEO RESULT */}
                   {mode === 'video' && generatedVideo && (
-                    <div className="rounded-xl overflow-hidden shadow-2xl bg-black aspect-video relative group">
+                    <div className="bg-black aspect-video relative group border border-black">
                       <video 
                         src={generatedVideo.videoUrl} 
                         controls 
@@ -573,32 +561,27 @@ const App: React.FC = () => {
                         loop
                         className="w-full h-full object-contain"
                       />
-                      <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm pointer-events-none">
-                        VEO GENERATION
-                      </div>
                     </div>
                   )}
 
                   {/* ANALYSIS RESULT */}
                   {mode === 'analysis' && generatedAnalysis && (
-                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row max-h-[600px]">
+                    <div className="bg-white border border-black flex flex-col md:flex-row max-h-[600px]">
                       {originalImage && (
-                        <div className="md:w-1/2 bg-black flex items-center justify-center p-4">
+                        <div className="md:w-1/2 bg-neutral-900 flex items-center justify-center p-8">
                            <video 
                              src={originalImage.base64} 
                              controls 
-                             className="max-w-full max-h-[400px] object-contain rounded-lg"
+                             className="max-w-full max-h-[400px] object-contain border border-white/20"
                            />
                         </div>
                       )}
-                      <div className="md:w-1/2 p-8 overflow-y-auto">
-                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
-                               <Sparkles size={24} />
-                            </div>
-                            <h2 className="text-xl font-bold text-gray-900">Video Insights</h2>
+                      <div className="md:w-1/2 p-10 overflow-y-auto bg-neutral-50">
+                         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-neutral-200">
+                            <Sparkles size={20} className="text-black" />
+                            <h2 className="text-lg font-bold uppercase tracking-widest text-black">Insights</h2>
                          </div>
-                         <div className="prose prose-indigo prose-sm max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
+                         <div className="prose prose-sm max-w-none text-neutral-600 font-light leading-relaxed whitespace-pre-wrap">
                             {generatedAnalysis}
                          </div>
                       </div>
@@ -607,21 +590,21 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white p-6 border-t border-gray-200">
-                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Instructions Used</h3>
-                      <p className="text-gray-800 text-sm line-clamp-2 md:line-clamp-none">
-                        {prompt || "Auto-analysis"}
+              <div className="bg-white border-t border-black p-8">
+                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="flex-1 border-l-2 border-black pl-4">
+                      <h3 className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-2">Configuration</h3>
+                      <p className="text-black text-sm font-light italic">
+                        "{prompt || "Auto-analysis"}"
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-4 shrink-0">
                       <button 
                         onClick={handleRefine}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 border border-neutral-200 text-xs font-bold uppercase tracking-widest hover:border-black transition-colors"
                       >
-                        <RefreshCw size={18} />
+                        <RefreshCw size={14} />
                         <span className="hidden sm:inline">Refine</span>
                       </button>
                       
@@ -629,10 +612,10 @@ const App: React.FC = () => {
                         <a 
                           href={generatedImage.base64} 
                           download={`edited-image-${Date.now()}.png`}
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-leaf-600 text-white font-medium hover:bg-leaf-700 transition-colors shadow-sm"
+                          className="flex items-center gap-2 px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
                         >
-                          <Download size={18} />
-                          <span>Download</span>
+                          <Download size={14} />
+                          <span>Save</span>
                         </a>
                       )}
 
@@ -640,28 +623,28 @@ const App: React.FC = () => {
                          <a 
                            href={generatedVideo.videoUrl}
                            download={`video-${Date.now()}.mp4`}
-                           className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+                           className="flex items-center gap-2 px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
                          >
-                           <Download size={18} />
-                           <span>Download</span>
+                           <Download size={14} />
+                           <span>Save</span>
                          </a>
                       )}
 
                        {mode === 'analysis' && (
                          <button 
                            onClick={() => navigator.clipboard.writeText(generatedAnalysis || "")}
-                           className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+                           className="flex items-center gap-2 px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
                          >
-                           <Copy size={18} />
-                           <span>Copy Text</span>
+                           <Copy size={14} />
+                           <span>Copy</span>
                          </button>
                       )}
                       
                       <button 
                         onClick={handleReset}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 border border-black text-black text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
                       >
-                        New Project
+                        New
                       </button>
                     </div>
                  </div>
@@ -670,8 +653,8 @@ const App: React.FC = () => {
           )}
         </div>
         
-        <div className="mt-8 text-center text-gray-400 text-sm">
-          <p>Powered by Google Gemini 2.5 Flash Image, 3.0 Pro Preview & Veo 3.1</p>
+        <div className="mt-12 text-center text-neutral-300 text-[10px] uppercase tracking-widest">
+          <p>Powered by Google Gemini 2.5 & Veo 3.1</p>
         </div>
 
         <ChatBot />

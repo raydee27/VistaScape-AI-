@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ImageData } from '../types';
 import { ChevronsLeftRight } from 'lucide-react';
@@ -47,16 +46,13 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
   };
 
   const onContainerClick = (e: React.MouseEvent) => {
-    // Check if the click originated from the handle (which involves dragging logic)
     const isHandle = (e.target as HTMLElement).closest('.slider-handle');
     
     if (isHandle) {
-      // If on handle, only trigger if we didn't move
       if (!hasMoved.current && onImageClick) {
         onImageClick();
       }
     } else {
-      // If on image background, trigger click
       if (onImageClick) {
         onImageClick();
       }
@@ -85,7 +81,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
   return (
     <div 
       ref={containerRef}
-      className="relative w-full aspect-video overflow-hidden rounded-xl shadow-2xl bg-gray-900 select-none group cursor-pointer"
+      className="relative w-full aspect-video overflow-hidden bg-neutral-100 select-none group cursor-pointer border border-neutral-200"
       onMouseMove={onMouseMove}
       onTouchMove={onTouchMove}
       onMouseLeave={() => setIsDragging(false)}
@@ -99,7 +95,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
       />
       
       {/* Label After */}
-      <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm z-10 pointer-events-none">
+      <div className="absolute top-0 right-0 bg-black text-white px-4 py-2 text-[10px] tracking-[0.2em] font-bold z-10 pointer-events-none">
         AFTER
       </div>
 
@@ -111,23 +107,23 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({ beforeImage,
         <img 
           src={beforeImage.base64} 
           alt="Before landscaping" 
-          className="absolute inset-0 w-full h-full object-cover" 
+          className="absolute inset-0 w-full h-full object-cover grayscale-[20%]" 
         />
         {/* Label Before */}
-        <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm z-10 pointer-events-none">
+        <div className="absolute top-0 left-0 bg-white text-black border-r border-b border-black px-4 py-2 text-[10px] tracking-[0.2em] font-bold z-10 pointer-events-none">
           BEFORE
         </div>
       </div>
 
       {/* Slider Handle */}
       <div 
-        className="slider-handle absolute top-0 bottom-0 w-1 bg-white cursor-col-resize z-20 flex items-center justify-center hover:bg-leaf-300 transition-colors"
+        className="slider-handle absolute top-0 bottom-0 w-[1px] bg-white cursor-col-resize z-20 flex items-center justify-center hover:bg-white transition-colors"
         style={{ left: `${sliderPosition}%` }}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
       >
-        <div className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center -ml-3.5 text-leaf-700">
-           <ChevronsLeftRight size={16} />
+        <div className="w-8 h-8 bg-black border border-white flex items-center justify-center -ml-4 text-white hover:scale-110 transition-transform duration-300">
+           <ChevronsLeftRight size={14} />
         </div>
       </div>
     </div>
